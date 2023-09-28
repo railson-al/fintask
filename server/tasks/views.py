@@ -1,9 +1,10 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from auditlog.models import LogEntry
 
-from .models import Task, Task_Status, Categorie
-from .serializers import TaskSerializer, TaskStatusSerializer, CategorieSerializer
+from tasks.models import Task, Task_Status, Categorie
+from tasks.serializers import TaskSerializer, TaskStatusSerializer, CategorieSerializer, AuditLogSerializer
 
 
 
@@ -30,6 +31,7 @@ def tasks(request):
 
 
 
+
 # View Details, Edit or Delete task
 @api_view(['GET', 'PUT', 'DELETE'])
 def tasks_detail(request, pk):
@@ -42,19 +44,38 @@ def tasks_detail(request, pk):
     # Return task detail
     if request.method == 'GET':
         serializer = TaskSerializer(task)
+        
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     elif request.method == 'PUT':
         serializer = TaskSerializer(task, data=request.data)
         if serializer.is_valid():
             serializer.save()
+
             return Response(serializer.data, status=status.HTTP_200_OK)
         
         return Response(serializer.erros, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         task.delete()
+
         return Response(status=status.HTTP_200_OK)
+
+
+
+
+# Return all changes made in the task
+@api_view(['GET'])
+def task_detail_log(request, pk):
+    try:
+        loggs = LogEntry.objects.filter(object_pk=pk).order_by('timestamp')
+    except LogEntry.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = AuditLogSerializer(loggs, many=True)
+
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 
@@ -78,6 +99,7 @@ def categories(request):
             return Response(categorie_serialized.data, status=status.HTTP_201_CREATED)
     
         return Response(categorie_serialized.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
@@ -109,6 +131,7 @@ def categories_detail(request, pk):
 
 
 
+
 # View ou Create tasks-status
 @api_view(['GET', 'POST'])
 def task_status(request):
@@ -130,6 +153,7 @@ def task_status(request):
     
         return Response(tasks_status_serialized.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
 
 
 # View Details, Edit or Delete task-status

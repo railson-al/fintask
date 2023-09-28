@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'app_users',
     'rest_framework',
     'rest_framework.authtoken',
+    'auditlog',
 ]
 
 MIDDLEWARE = [
