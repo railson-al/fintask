@@ -1,17 +1,18 @@
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework import status 
+from django.contrib.auth.models import User
+
+from app_users.serializers import UserSerializer
 
 
-class UserView(APIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-    permission_classes = [IsAuthenticated]
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def users_view(request):
+    users = User.objects.all()
+    serializer = UserSerializer(users, many=True)
 
-    def user_auth(self, request, format=None):
-        # content = {
-        #     'user': str(request.user),  # `django.contrib.auth.User` instance.
-        #     'auth': str(request.auth),  # None
-        # }
-        return Response(status=status.HTTP_200_OK)
+    return Response(serializer.data, status=status.HTTP_200_OK)
