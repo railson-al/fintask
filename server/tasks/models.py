@@ -26,6 +26,7 @@ class Task(models.Model):
     task_status = models.ForeignKey(Task_Status, on_delete=models.CASCADE)
     task_author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tasks_author", default=0)
     task_responsible = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tasks_responsible", default=0)
+    task_is_accepted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     history = AuditlogHistoryField()
