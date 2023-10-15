@@ -24,11 +24,11 @@ class User(AbstractBaseUser):
 
 class UserManager(BaseUserManager):
     
-    def create_user(self, email, date_of_birth, password=None):
+    def create_user(self, email, password=None, **others_fields):
         pass
 
 
-    def create_superuser(self, email, date_of_birth, password=None):
+    def create_superuser(self, email, password=None, **others_fields):
         pass
 
 
