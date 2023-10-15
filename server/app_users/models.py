@@ -1,16 +1,15 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from uuid import uuid4
 
 # Create your models here.
 class User(AbstractBaseUser):
-    
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    is_admin = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True) 
 
@@ -21,6 +20,17 @@ class User(AbstractBaseUser):
         db_table = 'users'
         verbose_name = 'user'
         verbose_name_plural = 'users'
+
+
+class UserManager(BaseUserManager):
+    
+    def create_user(self, email, date_of_birth, password=None):
+        pass
+
+
+    def create_superuser(self, email, date_of_birth, password=None):
+        pass
+
 
 
 class Sector(models.Model):
