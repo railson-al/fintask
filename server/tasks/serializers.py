@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from auditlog.models import LogEntry
 
-from tasks.models import Task, Task_Status, Categorie
+from tasks.models import Task, Task_Status, Task_Category
 
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,9 +16,9 @@ class TaskStatusSerializer(serializers.ModelSerializer):
         fields = ['task_status_id', 'task_status_description', 'created_at', 'updated_at']
 
 
-class CategorieSerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Categorie
+        model = Task_Category
         fields = ['categorie_id', 'categorie_description', 'created_at', 'updated_at']
 
 

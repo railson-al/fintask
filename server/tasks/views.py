@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from auditlog.models import LogEntry
 
-from tasks.models import Task, Task_Status, Categorie
-from tasks.serializers import TaskSerializer, TaskStatusSerializer, CategorieSerializer, AuditLogSerializer
+from tasks.models import Task, Task_Status, Task_Category
+from tasks.serializers import TaskSerializer, TaskStatusSerializer, CategorySerializer, AuditLogSerializer
 
 
 
@@ -57,7 +57,9 @@ def tasks_detail(request, pk):
         return Response(serializer.erros, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
-        task.delete()
+        task.task_status = ''
+        task.save()
+        
 
         return Response(status=status.HTTP_200_OK)
 
@@ -85,20 +87,20 @@ def categories(request):
 
     # verify if method is a GET requisition
     if request.method == 'GET':
-        categories = Categorie.objects.all()
-        serializer = CategorieSerializer(categories, many=True)
+        categories = Task_Category.objects.all()
+        serializer = CategorySerializer(categories, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     # verify if method is a POST requisition
     elif request.method == 'POST':
-        categorie_serialized = CategorieSerializer(data = request.data)
+        category_serialized = CategorySerializer(data = request.data)
 
-        if categorie_serialized.is_valid():
-            categorie_serialized.save() 
-            return Response(categorie_serialized.data, status=status.HTTP_201_CREATED)
+        if category_serialized.is_valid():
+            category_serialized.save() 
+            return Response(category_serialized.data, status=status.HTTP_201_CREATED)
     
-        return Response(categorie_serialized.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(category_serialized.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -108,17 +110,17 @@ def categories(request):
 def categories_detail(request, pk):
 
     try:
-        categories = Categorie.objects.get(pk = pk)
-    except Categorie.DoesNotExist:
+        categories = Task_Category.objects.get(pk = pk)
+    except Task_Category.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     # Return task detail
     if request.method == 'GET':
-        serializer = CategorieSerializer(categories)
+        serializer = CategorySerializer(categories)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     elif request.method == 'PUT':
-        serializer = CategorieSerializer(categories, data=request.data)
+        serializer = CategorySerializer(categories, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)

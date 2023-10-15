@@ -1,8 +1,27 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractBaseUser
 from uuid import uuid4
 
 # Create your models here.
+class User(AbstractBaseUser):
+    
+    email = models.EmailField(unique=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True) 
+
+    USERNAME_FIELD = 'email'
+    EMAIL_FIELD = 'email'
+
+    class Meta:
+        db_table = 'users'
+        verbose_name = 'user'
+        verbose_name_plural = 'users'
+
 
 class Sector(models.Model):
     sector_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
