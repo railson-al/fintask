@@ -1,8 +1,7 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
-from app_users.models import Sector, Sector_Employee
+from app_users.models import Sector, Sector_Employee, User
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,14 +24,14 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserLoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
+    email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
 
     def validate(self, data):
-        username = data.get('username')
+        email = data.get('email')
         password = data.get('password')
 
-        user = authenticate(username=username, password=password)
+        user = authenticate(username=email, password=password)
 
         if user and not user.is_active:
             raise serializers.ValidationError("User can't login")

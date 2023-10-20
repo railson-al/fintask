@@ -43,6 +43,7 @@ class Task_Category_Sector(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
 class Task(models.Model):
     task_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     task_ticket = models.CharField(max_length=100, unique=True, editable=False)

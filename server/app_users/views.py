@@ -4,9 +4,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework import status 
 from rest_framework.authtoken.models import Token
-from django.contrib.auth.models import User
 
-from app_users.models import Sector, Sector_Employee
+from app_users.models import Sector, Sector_Employee, User
 from app_users.serializers import UserSerializer, UserLoginSerializer, SectorSerializer, SectorEmployeeSerializer
 
 
@@ -17,6 +16,7 @@ def users_view(request, *args, **kwargs):
 
     if request.method == 'GET':
         users = User.objects.all()
+        print(users)
         serializer = UserSerializer(users, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
